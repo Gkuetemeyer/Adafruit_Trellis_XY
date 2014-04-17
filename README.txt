@@ -162,6 +162,7 @@ void loop() {
   // clear leds
   trellis.clear();
   trellis.writeDisplay();
+  //-----------------------------------------------------
   // print out X/Y coordinates for all trellis IDs
   for(byte n = 0; x < trellisXY.numKeys; n++) {
     Serial.print(trellisXY.getTrellisX(n), DEC);
