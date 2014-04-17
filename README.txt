@@ -1,5 +1,4 @@
-/  
-Adafruit_Trellis_XY.h
+Adafruit_Trellis_XY
 
 Copyright (C) 2014  George Kuetemeyer (gk@pobox.com)
    
