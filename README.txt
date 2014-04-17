@@ -16,6 +16,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
 This is a library for the Adafruit Trellis PCB
 
 Designed specifically to work with the Adafruit Trellis!
@@ -24,13 +25,16 @@ Designed specifically to work with the Adafruit Trellis!
    
 Version 1.2
 
+---------------------------------------------------------------------------------
 INSTALLATION:
 
 Adafruit_Trellis_XY is a library that can map one or more
 Adafruit Trellises into a set of X/Y coordinates.
 
+---------------------------------------------------------------------------------
 INSTALLATION:
 
+Download and unZip zip file
 Copy the "Adafruit_Trellis_XY folder to your "libraries" directory.
 
 In the Arduino IDE, create a new sketch and select fromn the menu bar
@@ -38,11 +42,13 @@ In the Arduino IDE, create a new sketch and select fromn the menu bar
 #include <Adafruit_Trellis_XY.h> at the top of your sketch along with
 other required libraries ( <Adafruit_Trellis.h>, etc.).
 
--------------------------------------------------------------------------------------CREATION:
+---------------------------------------------------------------------------------
+CREATION:
 
 Adafruit_Trellis_XY trellisXY = Adafruit_Trellis_XY();
 
--------------------------------------------------------------------------------------METHODS:
+---------------------------------------------------------------------------------
+METHODS:
 
 void begin (byte number_of_keys) // set up trellisXY with total number of keys
 
@@ -52,7 +58,7 @@ void getTrellisY (byte trellisId) // get Y coordinate for given trellis ID
 
 byte getTrellisId (byte xIn, byte yIn) // get Trellis ID for given X/Y coordinates
    
--------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 MAPPING TRELLIS TILE XY OFFSETS
    
 In order for this library to function correctly, it's important that you
@@ -112,7 +118,7 @@ Here is simplest example for one Trellis
 trellisXY.xOffsets[0] = 0;
 trellisXY.yOffsets[0] = 0;
 
--------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 SAMPLE CODE: 
 
 #include <Wire.h>
