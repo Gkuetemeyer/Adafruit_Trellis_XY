@@ -15,8 +15,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
    
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-   
--------------------------------------------------------------------------------------
 
 This is a library for the Adafruit Trellis PCB
 
@@ -26,13 +24,11 @@ Designed specifically to work with the Adafruit Trellis!
    
 Version 1.2
 
--------------------------------------------------------------------------------------
 INSTALLATION:
 
 Adafruit_Trellis_XY is a library that can map one or more
 Adafruit Trellises into a set of X/Y coordinates.
 
--------------------------------------------------------------------------------------
 INSTALLATION:
 
 Copy the "Adafruit_Trellis_XY folder to your "libraries" directory.
