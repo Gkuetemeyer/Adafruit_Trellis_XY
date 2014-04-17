@@ -26,7 +26,7 @@ Designed specifically to work with the Adafruit Trellis!
 Version 1.2
 
 ---------------------------------------------------------------------------------
-INSTALLATION:
+DESCRIPTION:
 
 Adafruit_Trellis_XY is a library that can map one or more
 Adafruit Trellises into a set of X/Y coordinates.
@@ -34,8 +34,10 @@ Adafruit Trellises into a set of X/Y coordinates.
 ---------------------------------------------------------------------------------
 INSTALLATION:
 
-Download and unZip zip file
-Copy the "Adafruit_Trellis_XY folder to your "libraries" directory.
+- Press "Download ZIP" button on GitHub page.
+- Download Zip file and unzip it.
+- Rename "Adafruit_Trellis_XY-master" folder name to "Adafruit_Trellis_XY"
+- Copy the "Adafruit_Trellis_XY folder to your "libraries" directory.
 
 In the Arduino IDE, create a new sketch and select fromn the menu bar
 "Sketch->import Library->Adafruit_Trellis_XY. Be sure to place
