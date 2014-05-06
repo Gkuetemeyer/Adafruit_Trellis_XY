@@ -35,14 +35,11 @@
  * Given that layout, this code will set up things correctly, assuming you've
  * defined an object trellisXY
  *
- * trellisXY.xOffsets[0] = 0;
- * trellisXY.xOffsets[1] = 4;
- * trellisXY.xOffsets[2] = 0;
- * trellisXY.xOffsets[3] = 4;
- * trellisXY.yOffsets[0] = 0;
- * trellisXY.yOffsets[1] = 0;
- * trellisXY.yOffsets[2] = 4;
- * trellisXY.yOffsets[3] = 4;
+ * trellisXY.setOffsets(0, 0, 0);
+ * trellisXY.setOffsets(1, 4, 0);
+ * trellisXY.setOffsets(2, 0, 4);
+ * trellisXY.setOffsets(3, 4, 4);
+ *
  *
  * Here's another example:
  *
@@ -51,14 +48,10 @@
  * ---------
  *
  * 
- * trellisXY.xOffsets[0] = 0;
- * trellisXY.xOffsets[1] = 4;
- * trellisXY.xOffsets[2] = 8;
- * trellisXY.xOffsets[3] = 12;
- * trellisXY.yOffsets[0] = 0;
- * trellisXY.yOffsets[1] = 0;
- * trellisXY.yOffsets[2] = 0;
- * trellisXY.yOffsets[3] = 0;
+ * trellisXY.setOffsets(0, 0, 0);
+ * trellisXY.setOffsets(1, 4, 0);
+ * trellisXY.setOffsets(2, 8, 0);
+ * trellisXY.setOffsets(3, 12, 0);
  *
  *
  * Here is simplest example for one Trellis
@@ -67,8 +60,7 @@
  * |0|  <------ tile layout for single Trellis
  * ---
  *
- * trellisXY.xOffsets[0] = 0;
- * trellisXY.yOffsets[0] = 0;
+ * trellisXY.setOffsets(0, 0, 0);
  */
 
 #if (ARDUINO >= 100)
@@ -80,17 +72,17 @@
 typedef uint8_t byte; 
 
 class Adafruit_Trellis_XY {	
-	public:
-		Adafruit_Trellis_XY(void);	
-		~Adafruit_Trellis_XY(void);
-		void begin(byte i_numKeys);
-		byte getTrellisId(byte xIn, byte yIn);	
-		byte getTrellisX(byte trellisID);
-		byte getTrellisY(byte trellisID);
-		byte numKeys;		
-		byte xOffsets[8];	
-		byte yOffsets[8];
-	private:
-		byte xOffset;
-		byte yOffset;	
+public:
+	Adafruit_Trellis_XY(void);	
+	~Adafruit_Trellis_XY(void);
+	void begin(byte i_numKeys);
+	byte getTrellisId(byte xIn, byte yIn);	
+	byte getTrellisX(byte trellisID);
+	byte getTrellisY(byte trellisID);
+	void setOffsets(byte tile_number, byte x_offset, byte y_offset);
+	byte numKeys;		
+	byte offsets[8][8];	
+private:
+	byte getOffsets(byte trellisID, byte x_or_y);
+	byte offset;
 };

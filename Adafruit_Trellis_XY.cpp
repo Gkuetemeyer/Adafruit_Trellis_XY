@@ -42,18 +42,10 @@ static byte trellisIDs[16][2] = {
 	{ 2, 0 },
 	{ 3, 0 }
 };
-		
-// this array maps X/Y coordinates to single trellis Tile IDs
-static byte XYTrellisIDs[4][4] = {
-	{ 12, 13, 14, 15 },
-	{  8,  9, 10, 11 },
-	{  4,  5,  6,  7 },
-	{  0,  1,  2,  3 }
-};
 
 //---------------------------------------------------------------
 Adafruit_Trellis_XY::Adafruit_Trellis_XY(void) {
-
+	
 }
 
 //---------------------------------------------------------------
@@ -69,87 +61,62 @@ void Adafruit_Trellis_XY::begin(byte i_numKeys) {
 }
 
 //---------------------------------------------------------------
-// map Trellis button/led ids to X coordinates
-byte Adafruit_Trellis_XY::getTrellisX(byte trellisID) {
-	// get trellis matrix offsets
-	if(trellisID < 16) {
-		xOffset   = xOffsets[0];
-	}
-	else if(trellisID > 15 && trellisID < 32) {
-		trellisID = trellisID - 16;
-		xOffset   = xOffsets[1];
-	}
-	else if(trellisID > 31 && trellisID < 48) {
-		trellisID = trellisID - 32;
-		xOffset   = xOffsets[2];
-	}  
-	else if(trellisID > 47 && trellisID < 64) {
-		trellisID = trellisID - 48;
-		xOffset   = xOffsets[3];
-	}
-	else if(trellisID > 63 && trellisID < 80) {
-		trellisID = trellisID - 64;
-		xOffset   = xOffsets[4];
-	}
-	else if(trellisID > 79 && trellisID < 96) {
-		trellisID = trellisID - 80;
-		xOffset   = xOffsets[5];
-	}  
-	else if(trellisID > 95 && trellisID < 112) {
-		trellisID = trellisID - 96;
-		xOffset   = xOffsets[6];
-	}
-	else if(trellisID > 111 && trellisID < 128) {
-		trellisID = trellisID - 112;
-		xOffset   = xOffsets[7];
-	}	
-	else {
-		xOffset   = xOffsets[0];
-	}
-	// add in offsets
-	return trellisIDs[trellisID][0] + xOffset;
+// set tile offsets
+void Adafruit_Trellis_XY::setOffsets(byte tile_number, byte x_offset, byte y_offset) {
+	offsets[tile_number][0] = x_offset;
+	offsets[tile_number][1] = y_offset;	
 }
 
 //---------------------------------------------------------------
-// map Trellis button/led ids to Y coordinates
-byte Adafruit_Trellis_XY::getTrellisY(byte trellisID) {	
+byte Adafruit_Trellis_XY::getTrellisX(byte trellisID) {
+	return getOffsets(trellisID, 0);
+}
+
+//---------------------------------------------------------------
+byte Adafruit_Trellis_XY::getTrellisY(byte trellisID) {
+	return getOffsets(trellisID, 1);
+}
+
+//---------------------------------------------------------------
+// map Trellis button/led ids to X coordinates
+byte Adafruit_Trellis_XY::getOffsets(byte trellisID, byte x_or_y) {
 	// get trellis matrix offsets
 	if(trellisID < 16) {
-		yOffset   = yOffsets[0];
+		offset    = offsets[0][x_or_y];
 	}
 	else if(trellisID > 15 && trellisID < 32) {
 		trellisID = trellisID - 16;
-		yOffset   = yOffsets[1];
+		offset    = offsets[1][x_or_y];
 	}
 	else if(trellisID > 31 && trellisID < 48) {
 		trellisID = trellisID - 32;
-		yOffset   = yOffsets[2];
+		offset    = offsets[2][x_or_y];
 	}  
 	else if(trellisID > 47 && trellisID < 64) {
 		trellisID = trellisID - 48;
-		yOffset   = yOffsets[3];
+		offset    = offsets[3][x_or_y];
 	}
 	else if(trellisID > 63 && trellisID < 80) {
 		trellisID = trellisID - 64;
-		yOffset   = yOffsets[4];
+		offset    = offsets[4][x_or_y];
 	}
 	else if(trellisID > 79 && trellisID < 96) {
 		trellisID = trellisID - 80;
-		yOffset   = yOffsets[5];
+		offset    = offsets[5][x_or_y];
 	}  
 	else if(trellisID > 95 && trellisID < 112) {
 		trellisID = trellisID - 96;
-		yOffset   = yOffsets[6];
+		offset    = offsets[6][x_or_y];
 	}
 	else if(trellisID > 111 && trellisID < 128) {
 		trellisID = trellisID - 112;
-		yOffset   = yOffsets[7];
+		offset    = offsets[7][x_or_y];
 	}	
 	else {
-		yOffset   = yOffsets[0];
+		offset   = offsets[0][x_or_y];
 	}
 	// add in offsets
-	return trellisIDs[trellisID][1] + yOffset;    
+	return trellisIDs[trellisID][x_or_y] + offset;
 }
 
 //----------------------------------------------------------------------
@@ -165,5 +132,4 @@ byte Adafruit_Trellis_XY::getTrellisId(byte xIn, byte yIn) {
 	// first Trellis ID or no match
   return 0;  
 }
-	
-	
+

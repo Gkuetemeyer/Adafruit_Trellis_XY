@@ -51,7 +51,9 @@ Adafruit_Trellis_XY trellisXY = Adafruit_Trellis_XY();
 ---------------------------------------------------------------------------------
 METHODS:
 
-void begin (byte number_of_keys) // set up trellisXY with total number of keys
+void begin (byte number_of_keys) // initialize trellisXY with total number of keys
+
+void setOffsets (byte tile_number, byte x_offset, byte y_offset) // set X/Y offsets
 
 void getTrellisX (byte trellisId) // get X coordinate for given trellis ID
 
@@ -74,14 +76,10 @@ four tiles in a square (8X8 buttons/leds):
 Given that layout, this code will set up things correctly, assuming you've
 defined an object trellisXY:
    
-trellisXY.xOffsets[0] = 0;
-trellisXY.xOffsets[1] = 4;
-trellisXY.xOffsets[2] = 0;
-trellisXY.xOffsets[3] = 4;
-trellisXY.yOffsets[0] = 0;
-trellisXY.yOffsets[1] = 0;
-trellisXY.yOffsets[2] = 4;
-trellisXY.yOffsets[3] = 4;
+trellisXY.setOffsets(0, 0, 0);
+trellisXY.setOffsets(1, 4, 0);
+trellisXY.setOffsets(2, 0, 4);
+trellisXY.setOffsets(3, 4, 4);
 
 Be sure to reflect this layout when you set up trellis.begin. In the case of
 a 4X4 matrix you will want to arrange your tile addresses to match this layout.
@@ -100,15 +98,10 @@ Here's another example:
   ---------
    
   
-trellisXY.xOffsets[0] = 0;
-trellisXY.xOffsets[1] = 4;
-trellisXY.xOffsets[2] = 8;
-trellisXY.xOffsets[3] = 12;
-trellisXY.yOffsets[0] = 0;
-trellisXY.yOffsets[1] = 0;
-trellisXY.yOffsets[2] = 0;
-trellisXY.yOffsets[3] = 0;
-   
+trellisXY.setOffsets(0, 0, 0);
+trellisXY.setOffsets(1, 4, 0);
+trellisXY.setOffsets(2, 8, 0);
+trellisXY.setOffsets(3, 12, 0);
    
 Here is simplest example for one Trellis
    
@@ -116,16 +109,23 @@ Here is simplest example for one Trellis
   |0|  <------ tile layout for single Trellis
   ---
    
-trellisXY.xOffsets[0] = 0;
-trellisXY.yOffsets[0] = 0;
+trellisXY.setOffsets(0, 0);
 
 ---------------------------------------------------------------------------------
 SAMPLE CODE: 
 
+//------------------------------------------------------------------------
 #include <Wire.h>
 #include <Adafruit_Trellis.h>
 #include <Adafruit_Trellis_XY.h>
 
+//------------------------------------------------------------------------
+  This example shows reading buttons and setting/clearing buttons in a loop
+  Also sending X/Y values to serial port.
+
+  Up to 8 tiles can be used. This example uses 4 tiles
+
+//------------------------------------------------------------------------
 Adafruit_Trellis matrix0 = Adafruit_Trellis();
 Adafruit_Trellis matrix1 = Adafruit_Trellis();
 Adafruit_Trellis matrix2 = Adafruit_Trellis();
@@ -133,75 +133,83 @@ Adafruit_Trellis matrix3 = Adafruit_Trellis();
 
 Adafruit_TrellisSet trellis =  Adafruit_TrellisSet(&matrix0, &matrix1, &matrix2, &matrix3);
 
-Adafruit_Trellis_XY trellisXY = Adafruit_Trellis_XY();
-#define NKEYS 64
-#define NROWS 8
-#define NCOLS 8
+#define NUMTRELLIS 4
+#define NKEYS (NUMTRELLIS * 16)
 
+Adafruit_Trellis_XY trellisXY = Adafruit_Trellis_XY();
+
+#define INTPIN A2
+
+//-----------------------------------------------------------
 void setup() {
-  // initialize trellis
+  Serial.begin(9600);
+  Serial.println("Trellis X/Y Demo");
+
+  // define number of keys
+  trellisXY.begin(NKEYS);
+  // set up x/y offsets
+  trellisXY.setOffsets(0, 0, 0);
+  trellisXY.setOffsets(1, 4, 0);
+  trellisXY.setOffsets(2, 0, 4);
+  trellisXY.setOffsets(3, 4, 4);
+  
+  // INT pin requires a pullup
+  pinMode(INTPIN, INPUT);
+  digitalWrite(INTPIN, HIGH);
+  
+  // Order is important here!! Start with tile address you want to
+  // use as the first one, etc. Note that this will vary depending
+  // on how you/ve set up addressing.
   trellis.begin(0x72, 0x73, 0x70, 0x71);
 
-  // initialize number of keys
-  trellisXY.begin(NKEYS);
-
-  // set up x/y offsets
-  trellisXY.xOffsets[0] = 0;
-  trellisXY.xOffsets[1] = 4;
-  trellisXY.xOffsets[2] = 0;
-  trellisXY.xOffsets[3] = 4;
-  trellisXY.yOffsets[0] = 0;
-  trellisXY.yOffsets[1] = 0;
-  trellisXY.yOffsets[2] = 4;
-  trellisXY.yOffsets[3] = 4;
-
-  Serial.begin(9600);
+  // light LEDs 
+  for (byte y = 0; y < 8; y++) {
+    for (byte x = 0; x < 8; x++) {
+      trellis.setLED(trellisXY.getTrellisId(x, y));
+      trellis.writeDisplay();    
+      delay(50);
+    }
+  }
+  // then turn them off
+  for (byte y = 0; y < 8; y++) {
+    for (byte x = 0; x < 8; x++) {
+      trellis.clrLED(trellisXY.getTrellisId(x, y));
+      trellis.writeDisplay();    
+      delay(50);
+    }
+  }
 }
 
+//------------------------------------------------------------------------
 void loop() {
-  // clear leds
-  trellis.clear();
+  delay(30);  
+  // If a button was just pressed or released...
+  if (trellis.readSwitches()) {
+    // go through every button
+    for (byte i=0; i < trellisXY.numKeys; i++) {
+      byte xValue;
+      byte yValue;
+      byte xyTrellisID;
+      // if it was pressed...
+      if (trellis.justPressed(i)) {
+        // print out X/Y values
+        Serial.println("----------");
+        // get x/y values
+        xValue = trellisXY.getTrellisX(i);
+        yValue = trellisXY.getTrellisY(i);
+        Serial.print("x: "); Serial.println(xValue, DEC);
+        Serial.print("y: "); Serial.println(yValue, DEC);
+        // get Trellis ID from x/y values
+        xyTrellisID = trellisXY.getTrellisId(xValue, yValue);
+        Serial.print("xyTrellisID: "); Serial.println(xyTrellisID, DEC);
+	// Alternate the LED
+	if (trellis.isLED(i)) 
+	  trellis.clrLED(i);
+	else
+	  trellis.setLED(i);
+        }
+     } 
+  }
   trellis.writeDisplay();
-  //-----------------------------------------------------
-  // print out X/Y coordinates for all trellis IDs
-  for(byte n = 0; x < trellisXY.numKeys; n++) {
-    Serial.print(trellisXY.getTrellisX(n), DEC);
-    Serial.print(" : ");
-    Serial.println(trellisXY.getTrellisY(n), DEC);
-    trellis.setLED(n);
-    trellis.writeDisplay();
-    delay(50);
-  }
-  //-----------------------------------------------------
-  // do vertical bars
-  trellis.clear();
-  // print out trellis IDs for X/Y coordinates
-  for(byte x = 0; x < NROWS; x++) {
-    for(byte y = 0; y < NCOLS; y++) {
-      Serial.print(x, DEC);
-      Serial.print(": ");
-      Serial.print(y, DEC);
-      Serial.print(": ");
-      Serial.println(trellisXY.getTrellisId(x, y));
-      trellis.setLED(trellisXY.getTrellisId(x, y));
-      trellis.writeDisplay();
-      delay(50);
-    }
-  }
-  //-----------------------------------------------------
-  // do horizontal bars
-  trellis.clear();
-  // print out trellis IDs for X/Y coordinates
-  for(byte y = 0; y < NCOLS; y++) {
-    for(byte x = 0; x < NROWS; x++) {
-      Serial.print(x, DEC);
-      Serial.print(": ");
-      Serial.print(y, DEC);
-      Serial.print(": ");
-      Serial.println(trellisXY.getTrellisId(x, y));
-      trellis.setLED(trellisXY.getTrellisId(x, y));
-      trellis.writeDisplay();
-      delay(50);
-    }
-  }
 }
+
