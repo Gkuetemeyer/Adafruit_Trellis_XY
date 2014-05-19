@@ -18,7 +18,17 @@
  *
  *  ---
  *
- *  Version 1.2
+ *  Version 2.1
+ *    Add new code for getTrellisId method yielding significant performance boost.
+ *
+ *  Previous Versions:
+ *
+ *    Version 2.0
+ *      OO version of code. Replace struct/pointer code with
+ *      class/methods.
+ *
+ *    Version 1.0
+ *      Initial release.
  *
  *-----------------------------------------------------------
  * Mapping Trellis Tile XY offsets
@@ -72,17 +82,18 @@
 typedef uint8_t byte; 
 
 class Adafruit_Trellis_XY {	
-public:
-	Adafruit_Trellis_XY(void);	
-	~Adafruit_Trellis_XY(void);
-	void begin(byte i_numKeys);
-	byte getTrellisId(byte xIn, byte yIn);	
-	byte getTrellisX(byte trellisID);
-	byte getTrellisY(byte trellisID);
-	void setOffsets(byte tile_number, byte x_offset, byte y_offset);
-	byte numKeys;		
-	byte offsets[8][8];	
-private:
-	byte getOffsets(byte trellisID, byte x_or_y);
-	byte offset;
+	public:
+		Adafruit_Trellis_XY(void);	
+		~Adafruit_Trellis_XY(void);
+		void begin(byte i_numKeys);
+		byte getTrellisId(byte xIn, byte yIn);	
+		byte getTrellisX(byte trellisID);
+		byte getTrellisY(byte trellisID);
+		void setOffsets(byte tile_number, byte xOffset, byte yOffset);
+		byte numKeys;
+		byte offsets[8][2];	
+	private:
+		byte getCoordinate(byte trellisID, byte x_or_y);
+		byte getOffset(byte coordinate);
+		byte offset;
 };
